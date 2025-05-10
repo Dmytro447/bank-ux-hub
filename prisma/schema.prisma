@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  role      Role     @default(VIEWER)
+  flows     UXFlow[]
+  createdAt DateTime @default(now())
+}
+
+model UXPattern {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  platform    Platform
+  category    Category @relation(fields: [categoryId], references: [id])
+  categoryId  String
+  screenshots String[]
+  tags        PatternTag[]
+  createdAt   DateTime @default(now())
+}
+
+model UXFlow {
+  id          String       @id @default(cuid())
+  title       String
+  description String?
+  author      User         @relation(fields: [authorId], references: [id])
+  authorId    String
+  steps       UXFlowStep[]
+  createdAt   DateTime     @default(now())
+}
+
+model UXFlowStep {
+  id      String  @id @default(cuid())
+  order   Int
+  title   String
+  notes   String?
+  image   String?
+  flow    UXFlow  @relation(fields: [flowId], references: [id])
+  flowId  String
+}
+
+model Category {
+  id    String       @id @default(cuid())
+  name  String       @unique
+  patterns UXPattern[]
+}
+
+model Tag {
+  id    String       @id @default(cuid())
+  name  String       @unique
+  patterns PatternTag[]
+}
+
+model PatternTag {
+  pattern   UXPattern @relation(fields: [patternId], references: [id])
+  patternId String
+  tag       Tag       @relation(fields: [tagId], references: [id])
+  tagId     String
+  @@id([patternId, tagId])
+}
+
+enum Platform {
+  IOS
+  ANDROID
+  WEB
+}
+
+enum Role {
+  ADMIN
+  EDITOR
+  VIEWER
+}
