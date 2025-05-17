@@ -2,10 +2,10 @@
 import { z } from "zod";
 // імпортуємо Platform як звичайний символ, щоб він був значенням
 import { Platform } from "@prisma/client";
-import { router, publicProcedure } from "../trpc";
+import { router, protectedProcedure } from "../trpc";
 
 export const patternRouter = router({
-  list: publicProcedure
+  list: protectedProcedure
     .input(z.object({ q: z.string().optional() }).optional())
     .query(async ({ ctx, input }) =>
       ctx.prisma.uXPattern.findMany({
@@ -20,7 +20,7 @@ export const patternRouter = router({
       })
     ),
 
-  create: publicProcedure
+  create: protectedProcedure
     .input(
       z.object({
         title: z.string().min(3),

@@ -2,6 +2,7 @@
 import Layout from "@/components/Layout";
 import { TrpcProvider } from "@/utils/trpc";
 import "./globals.css";
+import { ClerkProvider } from "@clerk/nextjs";
 
 export default function RootLayout({
   children,
@@ -11,9 +12,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <TrpcProvider>
-          <Layout>{children}</Layout>
-        </TrpcProvider>
+        <ClerkProvider>
+          <TrpcProvider>
+            <Layout>{children}</Layout>
+          </TrpcProvider>
+        </ClerkProvider>
       </body>
     </html>
   );

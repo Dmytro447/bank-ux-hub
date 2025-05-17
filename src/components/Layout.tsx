@@ -20,7 +20,10 @@ function BurgerMenu() {
             Patterns
           </Link>
           <Link href="/flows/builder" className="block p-4 hover:bg-gray-100">
-            Flows
+            Flows Builder
+          </Link>
+          <Link href="/flows" className="block p-4 hover:bg-gray-100">
+            All Flows
           </Link>
           <Link href="/admin" className="block p-4 hover:bg-gray-100">
             Admin
@@ -44,7 +47,12 @@ function Sidebar() {
         <Link
           href="/flows/builder"
           className="block px-4 py-2 text-gray-600 hover:bg-gray-100">
-          Flows
+          Flows Builder
+        </Link>
+        <Link
+          href="/flows"
+          className="block px-4 py-2 text-gray-600 hover:bg-gray-100">
+          All Flows
         </Link>
         <Link
           href="/admin"

@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { router, publicProcedure } from "../trpc";
+import { router, protectedProcedure } from "../trpc";
 
 export const flowRouter = router({
-  create: publicProcedure
+  create: protectedProcedure
     .input(
       z.object({
         title: z.string().min(3),
@@ -12,7 +12,7 @@ export const flowRouter = router({
               order: z.number().nonnegative(),
               title: z.string(),
               notes: z.string().optional(),
-              image: z.string().url().optional(),
+              image: z.string().url().nullable().optional(),
             })
           )
           .min(1),
@@ -22,10 +22,16 @@ export const flowRouter = router({
       ctx.prisma.uXFlow.create({
         data: {
           title: input.title,
-          authorId: ctx.user?.id ?? "guest",
+          authorId: ctx.userId ?? "guest",
           steps: { createMany: { data: input.steps } },
         },
         include: { steps: true },
       })
     ),
+  getAll: protectedProcedure.query(({ ctx }) =>
+    ctx.prisma.uXFlow.findMany({
+      include: { steps: true },
+      orderBy: { createdAt: "desc" },
+    })
+  ),
 });

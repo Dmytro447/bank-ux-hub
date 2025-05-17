@@ -8,61 +8,60 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  role      Role     @default(VIEWER)
-  flows     UXFlow[]
-  createdAt DateTime @default(now())
-}
-
-model UXPattern {
-  id          String   @id @default(cuid())
-  title       String
-  description String
-  platform    Platform
-  category    Category @relation(fields: [categoryId], references: [id])
-  categoryId  String
-  screenshots String[]
-  tags        PatternTag[]
-  createdAt   DateTime @default(now())
+  clerkId  String     @id
+  email    String     @unique
+  flows    UXFlow[]   @relation("UserFlows")
 }
 
 model UXFlow {
-  id          String       @id @default(cuid())
-  title       String
-  description String?
-  author      User         @relation(fields: [authorId], references: [id])
-  authorId    String
-  steps       UXFlowStep[]
-  createdAt   DateTime     @default(now())
+  id         String         @id @default(cuid())
+  title      String
+  authorId   String
+  author     User           @relation("UserFlows", fields: [authorId], references: [clerkId])
+  steps      UXFlowStep[]
+  createdAt  DateTime       @default(now())
 }
 
 model UXFlowStep {
-  id      String  @id @default(cuid())
+  id      String   @id @default(cuid())
   order   Int
   title   String
   notes   String?
   image   String?
-  flow    UXFlow  @relation(fields: [flowId], references: [id])
+  flow    UXFlow   @relation(fields: [flowId], references: [id])
   flowId  String
 }
 
+model UXPattern {
+  id          String       @id @default(cuid())
+  title       String @unique
+  description String
+  platform    Platform
+  category    Category     @relation(fields: [categoryId], references: [id])
+  categoryId  String
+  screenshots String[]
+  tags        PatternTag[]
+  createdAt   DateTime     @default(now())
+}
+
 model Category {
-  id    String       @id @default(cuid())
-  name  String       @unique
+  id       String       @id @default(cuid())
+  name     String       @unique
   patterns UXPattern[]
+description String     @default("Категорія UX-патернів") // дефолтне значення
+  iconUrl     String     @default("https://example.com/default-icon.svg") // дефолтне значення
 }
 
 model Tag {
-  id    String       @id @default(cuid())
-  name  String       @unique
+  id       String       @id @default(cuid())
+  name     String       @unique
   patterns PatternTag[]
 }
 
 model PatternTag {
-  pattern   UXPattern @relation(fields: [patternId], references: [id])
+  pattern   UXPattern    @relation(fields: [patternId], references: [id])
   patternId String
-  tag       Tag       @relation(fields: [tagId], references: [id])
+  tag       Tag          @relation(fields: [tagId], references: [id])
   tagId     String
   @@id([patternId, tagId])
 }
