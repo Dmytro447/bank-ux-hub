@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { HiMenu, HiX } from "react-icons/hi";
-
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 // Mobile Burger Menu
 function BurgerMenu() {
   const [open, setOpen] = useState(false);
@@ -34,37 +34,6 @@ function BurgerMenu() {
   );
 }
 
-// Sidebar for desktop
-function Sidebar() {
-  return (
-    <aside className="hidden lg:block w-56 bg-white border-r">
-      <nav className="mt-6">
-        <Link
-          href="/patterns"
-          className="block px-4 py-2 text-gray-600 hover:bg-gray-100">
-          Patterns
-        </Link>
-        <Link
-          href="/flows/builder"
-          className="block px-4 py-2 text-gray-600 hover:bg-gray-100">
-          Flows Builder
-        </Link>
-        <Link
-          href="/flows"
-          className="block px-4 py-2 text-gray-600 hover:bg-gray-100">
-          All Flows
-        </Link>
-        <Link
-          href="/admin"
-          className="block px-4 py-2 text-gray-600 hover:bg-gray-100">
-          Admin
-        </Link>
-      </nav>
-    </aside>
-  );
-}
-
-// Header component
 export function Header() {
   return (
     <header className="bg-white shadow-md fixed w-full z-10">
@@ -72,6 +41,7 @@ export function Header() {
         <Link href="/" className="text-xl font-semibold text-gray-800">
           Bank UX Hub
         </Link>
+
         <div className="flex items-center space-x-4">
           <div className="hidden lg:flex space-x-4">
             <Link
@@ -88,6 +58,19 @@ export function Header() {
               Admin
             </Link>
           </div>
+
+          <SignedOut>
+            <SignInButton>
+              <button className="text-sm px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
+                Sign In
+              </button>
+            </SignInButton>
+          </SignedOut>
+
+          <SignedIn>
+            <UserButton afterSignOutUrl="/" />
+          </SignedIn>
+
           <BurgerMenu />
         </div>
       </div>
@@ -106,42 +89,26 @@ export function Footer() {
   );
 }
 
-// Pattern Card component
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function PatternCard({ pattern }: { pattern: any }) {
-  return (
-    <div className="border bg-white rounded-md shadow-sm overflow-hidden">
-      {pattern.screenshots[0] && (
-        <img
-          src={pattern.screenshots[0]}
-          alt={pattern.title}
-          className="h-40 w-full object-cover"
-        />
-      )}
-      <div className="p-4">
-        <h3 className="font-semibold text-lg text-gray-800">{pattern.title}</h3>
-        <p className="mt-1 text-gray-600 text-sm truncate">
-          {pattern.description}
-        </p>
-      </div>
-    </div>
-  );
-}
-
-// Main Layout: header, sidebar, content, footer
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col">
+      {/* Header */}
+
       <Header />
-      <div className="pt-16 flex flex-1">
-        <Sidebar />
-        <main className="flex-grow bg-gray-50 pt-6">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {children}
-          </div>
-        </main>
-      </div>
-      <Footer />
+
+      {/* Main Content */}
+      <main className="pt-16 flex-grow bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          {children}
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 text-center text-gray-500 text-sm">
+          © {new Date().getFullYear()} Bank UX Hub. All rights reserved.
+        </div>
+      </footer>
     </div>
   );
 }

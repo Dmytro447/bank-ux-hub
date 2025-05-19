@@ -1,9 +1,7 @@
-
-
 "use client";
 import { useState } from "react";
 import { InlineFilterBar } from "@/components/InlineFilterBar";
-import { PatternCard } from "@/components/Layout";
+import { PatternCard } from "@/components/custom/PatternCard";
 import { trpc } from "@/utils/trpc";
 import { Platform } from "@prisma/client";
 

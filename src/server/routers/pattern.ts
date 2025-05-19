@@ -59,4 +59,16 @@ export const patternRouter = router({
         },
       });
     }),
+
+  byId: protectedProcedure
+    .input(z.object({ id: z.string().cuid() }))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.uXPattern.findUnique({
+        where: { id: input.id },
+        include: {
+          category: true,
+          tags: { include: { tag: true } },
+        },
+      });
+    }),
 });
